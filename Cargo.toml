@@ -4,4 +4,3 @@ version = "0.1.0"
 authors = ["Alexander Mescheryakov <freecoder.xx@gmail.com>"]
 
 [dependencies]
-derive_more = "0.7"

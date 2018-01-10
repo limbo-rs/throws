@@ -1,8 +1,5 @@
 #![allow(unused_imports)]
 
-#[macro_use]
-extern crate derive_more;
-
 #[macro_export]
 macro_rules! throws {
     ($(#[$attr:meta])* $name:ident = $($case:ident($error:path)),*) => {
@@ -16,7 +13,7 @@ macro_rules! throws {
     };
     ($(#[$attr:meta])* ($($vis:tt)*) $name:ident = $($case:ident($error:path)),*) => {
         $(#[$attr])*
-        #[derive(Debug, From)]
+        #[derive(Debug)]
         $($vis)* enum $name { $($case($error)),* }
 
         impl ::std::fmt::Display for $name {
@@ -40,6 +37,14 @@ macro_rules! throws {
                 }
             }
         }
+
+        $(
+        impl ::std::convert::From<$error> for $name {
+            fn from(err: $error) -> $name {
+                $name::$case(err)
+            }
+        }
+        )*
     };
 }
 

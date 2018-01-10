@@ -1,6 +1,12 @@
 [package]
 name = "throws"
-version = "0.1.0"
-authors = ["Alexander Mescheryakov <freecoder.xx@gmail.com>"]
+version = "0.1.1"
+description = "A macro for easy creation per-function errors."
+repository = "https://github.com/limbo-rs/throws"
+keywords = ["throw", "throws", "error", "macros", "exception"]
+license = "MIT"
+authors = [
+    "Alexander Mescheryakov <freecoder.xx@gmail.com>"
+]
 
 [dependencies]

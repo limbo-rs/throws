@@ -1,6 +1,6 @@
 [package]
 name = "throws"
-version = "0.1.1"
+version = "0.1.2"
 description = "A macro for easy creation per-function errors."
 repository = "https://github.com/limbo-rs/throws"
 keywords = ["throw", "throws", "error", "macros", "exception"]

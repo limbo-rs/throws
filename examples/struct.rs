@@ -6,8 +6,10 @@ use std::num::{ParseIntError, ParseFloatError};
 
 struct SomeStruct;
 
-throws!(FooError = Io(io::Error), Parse(ParseIntError));
-throws!(BarError = ParseFloat(ParseFloatError), Foo(FooError));
+throws! {
+    FooError = Io(io::Error), Parse(ParseIntError);
+    BarError = ParseFloat(ParseFloatError), Foo(FooError)
+}
 impl SomeStruct {
     fn foo(&self) -> Result<(), FooError> {
         Err(From::from(io::Error::from(io::ErrorKind::NotFound)))

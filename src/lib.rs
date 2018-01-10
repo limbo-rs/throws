@@ -2,16 +2,17 @@
 
 #[macro_export]
 macro_rules! throws {
-    ($(#[$attr:meta])* $name:ident = $($case:ident($error:path)),*) => {
-        throws!($(#[$attr])* () $name = $($case($error)),*);
+    ($($(#[$attr:meta])* $name:ident = $($case:ident($error:path)),*);+) => {
+        throws!($($(#[$attr])* () $name = $($case($error)),*);+);
     };
-    ($(#[$attr:meta])* pub $name:ident = $($case:ident($error:path)),*) => {
-        throws!($(#[$attr])* (pub) $name = $($case($error)),*);
+    ($($(#[$attr:meta])* pub $name:ident = $($case:ident($error:path)),*);+) => {
+        throws!($($(#[$attr])* (pub) $name = $($case($error)),*);+);
     };
-    ($(#[$attr:meta])* pub($($restriction:tt)+) $name:ident = $($case:ident($error:path)),*) => {
-        throws!($(#[$attr])* (pub($($restriction)+)) $name = $($case($error)),*);
+    ($($(#[$attr:meta])* pub($($restriction:tt)+) $name:ident = $($case:ident($error:path)),*);+) => {
+        throws!($($(#[$attr])* (pub($($restriction)+)) $name = $($case($error)),*);+);
     };
-    ($(#[$attr:meta])* ($($vis:tt)*) $name:ident = $($case:ident($error:path)),*) => {
+    ($($(#[$attr:meta])* ($($vis:tt)*) $name:ident = $($case:ident($error:path)),*);+) => {
+    $(
         $(#[$attr])*
         #[derive(Debug)]
         $($vis)* enum $name { $($case($error)),* }
@@ -45,6 +46,7 @@ macro_rules! throws {
             }
         }
         )*
+    )+
     };
 }
 
@@ -59,6 +61,11 @@ mod tests {
 
     throws!(MultipleError = Io(io::Error), ParseFloat(ParseFloatError), Single(SingleIoError));
 
+    throws! {
+        IoError = Io(io::Error);
+        ParseError = Parse(ParseIntError)
+    }
+
     mod error {
         use super::*;
 
@@ -71,6 +78,12 @@ mod tests {
             #[allow(missing_docs)]
             pub(crate) AllFeaturesError = ParseInt(ParseIntError), ParseFloat(ParseFloatError)
         );
+
+        throws! {
+            () PrivateIoError = Io(io::Error);
+            #[derive(Clone)]
+            (pub) PubParseError = Parse(ParseIntError)
+        }
     }
 
     #[test]
@@ -126,5 +139,10 @@ mod tests {
             _ => false,
         });
         assert_eq!(error, error.clone());
+
+        let error = From::from(io::Error::from(io::ErrorKind::NotFound));
+        assert!(match error {
+            IoError::Io(_) => true,
+        });
     }
 }

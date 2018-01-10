@@ -6,8 +6,10 @@ mod my {
 
     pub struct SomeStruct;
 
-    throws! { #[derive(Clone)] pub FooError = ParseInt(ParseIntError) }
     throws! {
+        #[derive(Clone)]
+        pub FooError = ParseInt(ParseIntError);
+
         #[derive(Clone)]
         pub BarError = ParseFloat(ParseFloatError), Foo(FooError)
     }
